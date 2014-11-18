@@ -191,6 +191,8 @@ public class DetailFilmFragment extends Fragment {
                         film = new Film(jsonObject);
 
                         Ion.with(ivImage)
+                                .placeholder(R.drawable.spinner_white_76)
+                                .error(R.drawable.error_48)
                                 .load(film.getImageUrl());
 
                         tvTitre.setText(film.getTitre());

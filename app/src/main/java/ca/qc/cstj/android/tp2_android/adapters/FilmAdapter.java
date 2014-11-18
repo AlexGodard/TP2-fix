@@ -57,7 +57,6 @@ public class FilmAdapter extends BaseAdapter {
             convertView = mInflater.inflate(R.layout.row_film,null);
             filmViewHolder = new FilmViewHolder();
             filmViewHolder.txtTitre = (TextView)convertView.findViewById(R.id.txtTitre);
-            filmViewHolder.imgFilm = (ImageView)convertView.findViewById(R.id.ivImage);
 
             convertView.setTag(filmViewHolder);
         } else {
@@ -68,11 +67,6 @@ public class FilmAdapter extends BaseAdapter {
 
         filmViewHolder.txtTitre.setText(film.getAsJsonPrimitive("titre").getAsString());
 
-        Ion.with(filmViewHolder.imgFilm)
-           .placeholder(R.drawable.spinner_white_76)
-           .error(R.drawable.error_48)
-           .load(film.getAsJsonPrimitive("imageUrl").getAsString());
-
 
         return convertView;
 
@@ -80,6 +74,5 @@ public class FilmAdapter extends BaseAdapter {
 
     private static class FilmViewHolder {
         public TextView txtTitre;
-        public ImageView imgFilm;
     }
 }
