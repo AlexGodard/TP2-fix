@@ -1,6 +1,7 @@
 package ca.qc.cstj.android.tp2_android;
 
 import android.app.Activity;
+import android.app.FragmentTransaction;
 import android.app.ProgressDialog;
 import android.net.Uri;
 import android.app.Fragment;
@@ -8,6 +9,7 @@ import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
@@ -32,6 +34,7 @@ import ca.qc.cstj.android.tp2_android.helpers.DateParser;
 import ca.qc.cstj.android.tp2_android.models.Film;
 import ca.qc.cstj.android.tp2_android.models.Cinema;
 import ca.qc.cstj.android.tp2_android.models.Horaire;
+import ca.qc.cstj.android.tp2_android.services.ServicesURI;
 
 
 /**
@@ -105,6 +108,24 @@ public class CinemaHoraireFragment extends Fragment {
         lstHoraire = (ListView) getActivity().findViewById(R.id.list_horaires);
 
         progressDialog = ProgressDialog.show(getActivity(), "Horaires", "En chargement...", true, false);
+        loadHoraires();
+        progressDialog.dismiss();
+        lstHoraire.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                int idFilm = horaireAdapter.getItem(position).getIdFilm();
+
+                FragmentTransaction transaction =  getFragmentManager().beginTransaction();
+                transaction.replace(R.id.container,DetailFilmFragment.newInstance(ServicesURI.FILMS_SERVICE_URI + "/" + idFilm))
+                        .addToBackStack("");
+                transaction.commit();
+
+            }
+        });
+    }
+
+    private void loadHoraires()
+    {
         Ion.with(getActivity())
                 .load(href + "/films")
                 .asJsonArray()
@@ -112,20 +133,18 @@ public class CinemaHoraireFragment extends Fragment {
                     @Override
                     public void onCompleted(Exception e, JsonArray jsonArray) {
                         ArrayList<Horaire> listeHoraires = new ArrayList<Horaire>();
-                                // Pour chaque film
-                                for (JsonElement film : jsonArray) {
-                                    JsonObject objFilm = film.getAsJsonObject();
+                        // Pour chaque film
+                        for (JsonElement film : jsonArray) {
+                            JsonObject objFilm = film.getAsJsonObject();
 
-                                    titre = objFilm.getAsJsonPrimitive("film").getAsString();
-                                    idFilm = objFilm.getAsJsonPrimitive("idFilm").getAsInt();
+                            titre = objFilm.getAsJsonPrimitive("film").getAsString();
+                            idFilm = objFilm.getAsJsonPrimitive("idFilm").getAsInt();
 
-                                    listeHoraires.add(new Horaire(titre, idFilm, href));
-                                }
+                            listeHoraires.add(new Horaire(titre, idFilm, href));
+                        }
 
-                                horaireAdapter = new HoraireAdapter(getActivity(), getActivity().getLayoutInflater(),listeHoraires);
-                                lstHoraire.setAdapter(horaireAdapter);
-                                progressDialog.dismiss();
-
+                        horaireAdapter = new HoraireAdapter(getActivity(), getActivity().getLayoutInflater(),listeHoraires);
+                        lstHoraire.setAdapter(horaireAdapter);
                     }
                 });
     }

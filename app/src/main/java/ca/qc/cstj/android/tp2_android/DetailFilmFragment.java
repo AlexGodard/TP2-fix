@@ -138,17 +138,17 @@ public class DetailFilmFragment extends Fragment {
 
         JsonObject body = new JsonObject();
         // TODO: ID
-        body.addProperty("idFilm",href.substring(href.length() - 1));
-        body.addProperty("texte",etCommentaire.getText().toString());
-        body.addProperty("note",etNote.getText().toString());
-        body.addProperty("auteur",etPseudo.getText().toString());
+        if(!etCommentaire.getText().toString().isEmpty() && !etNote.getText().toString().isEmpty() && !etPseudo.getText().toString().isEmpty()) {
+            body.addProperty("idFilm",href.substring(href.length() - 1));
+            body.addProperty("texte",etCommentaire.getText().toString());
+            body.addProperty("note",etNote.getText().toString());
+            body.addProperty("auteur",etPseudo.getText().toString());
 
-        DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.sss'Z'");
-        String nowAsISO = df.format(new Date());
+            DateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'hh:mm:ss.sss'Z'");
+            String nowAsISO = df.format(new Date());
 
-        body.addProperty("dateHeure", nowAsISO);
+            body.addProperty("dateHeure", nowAsISO);
 
-        if(body.has("texte") && body.has("note") && body.has("auteur")) {
             Ion.with(getActivity())
                     .load("POST",href + "/commentaires")
                     .addHeader("Content-Type", "application/json")
@@ -159,7 +159,7 @@ public class DetailFilmFragment extends Fragment {
                         public void onCompleted(Exception e, JsonObject jsonObject) {
                             Toast.makeText(getActivity().getApplicationContext(),
                                     "Commentaire ajouté!", Toast.LENGTH_LONG).show();
-                            etPseudo.setText("");
+                            etCommentaire.setText("");
                             etNote.setText("");
                             etPseudo.setText("");
                         }
