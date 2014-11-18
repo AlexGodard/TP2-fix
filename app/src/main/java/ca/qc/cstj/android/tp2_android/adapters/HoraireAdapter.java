@@ -77,12 +77,23 @@ public class HoraireAdapter extends ArrayAdapter<Horaire> {
                                 horaire.setDate2(DateParser.ParseToDate(dtDateHeure));
                                 horaire.setHeure2(DateParser.ParseToTime(dtDateHeure));
                             }
+
                             i++;
                         }
 
                         horaireViewHolder.txtTitre.setText(horaire.getTitre());
-                        horaireViewHolder.txtHoraire1.setText(horaire.getDate1() + ", " + horaire.getHeure1());
-                        horaireViewHolder.txtHoraire2.setText(horaire.getDate2() + ", " + horaire.getHeure2());
+                        //S'il n'y a pas d'horaire, on ne l'affiche pas
+                        if(horaire.getDate1() == null) {
+                            horaireViewHolder.txtHoraire1.setText("");
+                        } else {
+                            horaireViewHolder.txtHoraire1.setText(horaire.getDate1() + ", " + horaire.getHeure1());
+                        }
+
+                        if(horaire.getDate2() == null) {
+                            horaireViewHolder.txtHoraire2.setText("");
+                        } else {
+                            horaireViewHolder.txtHoraire2.setText(horaire.getDate2() + ", " + horaire.getHeure2());
+                        }
                     }
 
                 });
