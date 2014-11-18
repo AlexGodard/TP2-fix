@@ -148,18 +148,30 @@ public class DetailFilmFragment extends Fragment {
 
         body.addProperty("dateHeure", nowAsISO);
 
-        Ion.with(getActivity())
-                .load("POST",href + "/commentaires")
-                .addHeader("Content-Type", "application/json")
-                .setJsonObjectBody(body)
-                .asJsonObject()
-                .setCallback(new FutureCallback<JsonObject>() {
-                    @Override
-                    public void onCompleted(Exception e, JsonObject jsonObject) {
-                        Toast.makeText(getActivity().getApplicationContext(),
-                                "Commentaire ajouté!", Toast.LENGTH_LONG).show();
-                    }
-                });
+        if(body.has("texte") && body.has("note") && body.has("auteur")) {
+            Ion.with(getActivity())
+                    .load("POST",href + "/commentaires")
+                    .addHeader("Content-Type", "application/json")
+                    .setJsonObjectBody(body)
+                    .asJsonObject()
+                    .setCallback(new FutureCallback<JsonObject>() {
+                        @Override
+                        public void onCompleted(Exception e, JsonObject jsonObject) {
+                            Toast.makeText(getActivity().getApplicationContext(),
+                                    "Commentaire ajouté!", Toast.LENGTH_LONG).show();
+                            etPseudo.setText("");
+                            etNote.setText("");
+                            etPseudo.setText("");
+                        }
+                    });
+        }
+        else
+        {
+            Toast.makeText(getActivity().getApplicationContext(),
+                    "Erreur : Vous devez entrer du texte, une note, et un pseudo!", Toast.LENGTH_LONG).show();
+        }
+
+
     }
 
     @Override
